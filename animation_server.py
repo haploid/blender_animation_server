@@ -94,10 +94,13 @@ class AnimationServerOperator(async_loop.AsyncModalOperatorMixin, bpy.types.Oper
         poses = sample_animation(bpy.context.object)
         pose_lines = [','.join(['{0:0.2f}'.format(v) for v in p]) for p in poses]
         pose_listing = '\n'.join(pose_lines)
-        reply = f'fps={fps}\n{pose_listing}'
+        reply = f'frameCount={len(pose_lines)},fps={fps}\n{pose_listing}\n'
 
     # Reply to the request
     dataToSend = reply.encode()
+
+    self.log.debug(f'Writing {len(dataToSend)} byte reply')
+
     writer.write(dataToSend)
     await writer.drain()
 
